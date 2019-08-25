@@ -17,8 +17,19 @@ class NavBarVC: UIViewController {
     }
 
     func setUp() {
-        searchBar = SearchBarfind(navigationItem: navigationItem) { (text) in
+        title = "titulo de prueba 1234567890"
+        let menuItems = [
+            SearchBarfind.createUIBarButtonItem(self, "⚙️", action: #selector(tapButtonMenu)),
+            SearchBarfind.createUIBarButtonItem(self, "⚙️", action: #selector(tapButtonMenu)),
+            SearchBarfind.createUIBarButtonItem(self, "⚙️", action: #selector(tapButtonMenu)),
+            SearchBarfind.createUIBarButtonItem(self, "⚙️", action: #selector(tapButtonMenu))
+        ]
+        searchBar = SearchBarfind(navigationItem: navigationItem, menuItems: menuItems) { (text) in
             print("se va a filtrar por el texto: \(text)")
         }
+    }
+    
+    @objc func tapButtonMenu() {
+        print("Click en el boton del menu")
     }
 }

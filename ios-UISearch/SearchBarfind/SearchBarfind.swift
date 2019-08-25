@@ -15,22 +15,24 @@ class SearchBarfind: NSObject {
     fileprivate lazy var searchBar = UISearchBar(frame: CGRect.zero)
     fileprivate weak var navigationItem: UINavigationItem?
     fileprivate var closure: ClosureSeachBar
-    var titlefind = "Find"
-    var titleCancel = "Cancel"
-    var placeHolder = "Find"
+    var titlefind = "🔎"
+    var titleCancel = "❌"
+    var placeHolder = "Buscar"
     
-    init(navigationItem: UINavigationItem, _ onChange: @escaping ClosureSeachBar) {
+    init(navigationItem: UINavigationItem, menuItems: [UIBarButtonItem] = [UIBarButtonItem](), _ onChange: @escaping ClosureSeachBar) {
         closure = onChange
         super.init()
         self.navigationItem = navigationItem
         searchBar.delegate = self
         searchBar.returnKeyType = .done
         configMenuItemSearch(navigationItem: navigationItem, title: titlefind)
+        for item in menuItems {
+            navigationItem.rightBarButtonItems!.append(item)
+        }
     }
     
-    
-    func configMenuItemSearch(navigationItem: UINavigationItem?, title: String) {
-        navigationItem?.rightBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(tabButtonFind))
+    private func configMenuItemSearch(navigationItem: UINavigationItem?, title: String) {
+        navigationItem?.rightBarButtonItem = SearchBarfind.createUIBarButtonItem(self, title, action: #selector(tabButtonFind))
     }
     
     @objc func tabButtonFind() {
@@ -42,7 +44,7 @@ class SearchBarfind: NSObject {
         }
     }
     
-    func showSeachBar() {
+    private func showSeachBar() {
         configMenuItemSearch(navigationItem: navigationItem, title: titleCancel)
         
         searchBar.placeholder = placeHolder
@@ -50,11 +52,25 @@ class SearchBarfind: NSObject {
         searchBar.becomeFirstResponder()
     }
     
-    func hideSeachBar() {
+    private func hideSeachBar() {
         configMenuItemSearch(navigationItem: navigationItem, title: titlefind)
         navigationItem?.titleView = nil
         searchBar.resignFirstResponder()
         searchBar.text = ""
+    }
+    
+    class func createUIBarButtonItem(_ target: Any, _ image: UIImage?, action: Selector?, width: Int = 15, height: Int = 15) -> UIBarButtonItem {
+        let button = UIButton(type: .custom)
+        button.setImage(image, for: .normal)
+        if let action = action {
+            button.addTarget(target, action: action, for: .touchUpInside)
+        }
+        button.frame = CGRect(x: 0, y: 0, width: width, height: height)
+        return UIBarButtonItem(customView: button)
+    }
+    
+    class func createUIBarButtonItem(_ target: Any, _ title: String, action: Selector?) -> UIBarButtonItem {
+        return UIBarButtonItem(title: title, style: .plain, target: target, action: action)
     }
 }
 
